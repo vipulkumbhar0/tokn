@@ -1,208 +1,97 @@
 /* =========================
-   TOKN v2 - Smart Token Visualizer
-   (Pseudo BPE-style simulation)
+   TOKN SAFE INIT VERSION
 ========================= */
 
-/* Elements */
-const promptInput = document.getElementById("promptInput");
+window.addEventListener("DOMContentLoaded", () => {
 
-const charCount = document.getElementById("charCount");
-const wordCount = document.getElementById("wordCount");
-const tokenCount = document.getElementById("tokenCount");
+    console.log("Tokn JS Loaded ✔");
 
-const tokenContainer = document.getElementById("tokenContainer");
-const jsonOutput = document.getElementById("jsonOutput");
+    /* ELEMENTS */
+    const promptInput = document.getElementById("promptInput");
 
-const contextProgress = document.getElementById("contextProgress");
-const contextUsageText = document.getElementById("contextUsageText");
-const tokenBadge = document.getElementById("tokenBadge");
+    const charCount = document.getElementById("charCount");
+    const wordCount = document.getElementById("wordCount");
+    const tokenCount = document.getElementById("tokenCount");
 
-/* Config */
-const CONTEXT_LIMIT = 128000;
+    const tokenContainer = document.getElementById("tokenContainer");
+    const jsonOutput = document.getElementById("jsonOutput");
 
-/* =========================
-   SMART TOKENIZER (Pseudo BPE)
-========================= */
+    const contextProgress = document.getElementById("contextProgress");
+    const contextUsageText = document.getElementById("contextUsageText");
+    const tokenBadge = document.getElementById("tokenBadge");
 
-/*
-   This is NOT real tiktoken,
-   but simulates subword behavior:
+    const CONTEXT_LIMIT = 128000;
 
-   - splits punctuation
-   - splits camelCase
-   - splits long words into chunks
-   - keeps common words intact
-*/
-
-function smartTokenize(text) {
-    if (!text) return [];
-
-    let raw = text
-        .replace(/\n/g, " \n ")
-        .replace(/([.,!?;:()])/g, " $1 ")
-        .split(/\s+/)
-        .filter(Boolean);
-
-    let tokens = [];
-
-    raw.forEach(word => {
-        // keep punctuation as separate tokens
-        if (/^[.,!?;:()]+$/.test(word)) {
-            tokens.push(word);
-            return;
-        }
-
-        // detect camelCase → split
-        let camelSplit = word.replace(/([a-z])([A-Z])/g, "$1 $2").split(" ");
-
-        camelSplit.forEach(part => {
-            if (!part) return;
-
-            // long word simulation (BPE-like chunking)
-            if (part.length > 12) {
-                for (let i = 0; i < part.length; i += 4) {
-                    tokens.push(part.slice(i, i + 4));
-                }
-            } else if (part.length > 8) {
-                for (let i = 0; i < part.length; i += 3) {
-                    tokens.push(part.slice(i, i + 3));
-                }
-            } else {
-                tokens.push(part);
-            }
-        });
-    });
-
-    return tokens;
-}
-
-/* =========================
-   COUNTERS
-========================= */
-
-function getWordCount(text) {
-    if (!text.trim()) return 0;
-    return text.trim().split(/\s+/).length;
-}
-
-function estimateTokens(text) {
-    return Math.ceil(text.length / 3.8);
-}
-
-/* =========================
-   ANIMATED RENDER
-========================= */
-
-function renderTokensAnimated(tokens) {
-    tokenContainer.innerHTML = "";
-
-    if (!tokens.length) {
-        tokenContainer.innerHTML = `
-            <div class="empty-state">
-                <div class="empty-icon">🧠</div>
-                <h4>Start typing</h4>
-                <p>Tokens will appear here automatically.</p>
-            </div>
-        `;
+    /* SAFETY CHECK */
+    if (!promptInput) {
+        console.error("❌ promptInput not found. Check HTML ID.");
         return;
     }
 
-    tokens.forEach((token, i) => {
-        setTimeout(() => {
-            const el = document.createElement("span");
+    /* TOKENIZER (simple safe version) */
+    function tokenize(text) {
+        if (!text) return [];
+        return text
+            .trim()
+            .split(/\s+/)
+            .filter(Boolean);
+    }
 
-            el.textContent = token;
+    function update() {
+        const text = promptInput.value || "";
 
-            el.style.padding = "6px 10px";
-            el.style.borderRadius = "8px";
-            el.style.fontSize = "13px";
-            el.style.margin = "2px";
-            el.style.display = "inline-block";
+        const tokens = tokenize(text);
 
-            // gradient based token style
-            el.style.background = "rgba(99,102,241,0.15)";
-            el.style.border = "1px solid rgba(99,102,241,0.4)";
-            el.style.color = "#c7d2fe";
+        /* stats */
+        charCount.textContent = text.length;
+        wordCount.textContent = text.trim() ? text.trim().split(/\s+/).length : 0;
+        tokenCount.textContent = tokens.length;
 
-            el.style.opacity = "0";
-            el.style.transform = "translateY(6px)";
-            el.style.transition = "0.2s ease";
+        tokenBadge.textContent = `${tokens.length} Tokens`;
 
-            tokenContainer.appendChild(el);
+        /* render tokens */
+        tokenContainer.innerHTML = "";
 
-            requestAnimationFrame(() => {
-                el.style.opacity = "1";
-                el.style.transform = "translateY(0)";
+        if (tokens.length === 0) {
+            tokenContainer.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-icon">🧠</div>
+                    <h4>Start typing</h4>
+                    <p>Tokens will appear here automatically.</p>
+                </div>
+            `;
+        } else {
+            tokens.forEach(t => {
+                const span = document.createElement("span");
+                span.textContent = t;
+                span.className = "token";
+                span.style.padding = "6px 10px";
+                span.style.margin = "3px";
+                span.style.display = "inline-block";
+                span.style.borderRadius = "8px";
+                span.style.background = "rgba(99,102,241,0.15)";
+                span.style.border = "1px solid rgba(99,102,241,0.4)";
+                tokenContainer.appendChild(span);
             });
+        }
 
-        }, i * 15); // streaming effect
-    });
-}
+        /* context bar */
+        const est = Math.ceil(text.length / 4);
+        const percent = Math.min((est / CONTEXT_LIMIT) * 100, 100);
 
-/* =========================
-   JSON OUTPUT
-========================= */
+        contextProgress.style.width = percent + "%";
+        contextUsageText.textContent = `${est} / ${CONTEXT_LIMIT}`;
 
-function updateJSON(tokens, text) {
-    const payload = {
-        model: "tokn-v2-simulated-bpe",
-        input: text,
-        characters: text.length,
-        words: getWordCount(text),
-        tokens: tokens,
-        tokenCount: tokens.length,
-        estimatedTokens: estimateTokens(text),
-        compressionRatio: (tokens.length / Math.max(1, text.length)).toFixed(3)
-    };
+        jsonOutput.textContent = JSON.stringify({
+            text,
+            tokens,
+            tokenCount: tokens.length
+        }, null, 2);
+    }
 
-    jsonOutput.textContent = JSON.stringify(payload, null, 2);
-}
+    /* EVENT */
+    promptInput.addEventListener("input", update);
 
-/* =========================
-   STATS + CONTEXT
-========================= */
-
-function updateStats(text, tokens) {
-    const chars = text.length;
-    const words = getWordCount(text);
-    const tCount = tokens.length;
-
-    charCount.textContent = chars;
-    wordCount.textContent = words;
-    tokenCount.textContent = tCount;
-    tokenBadge.textContent = `${tCount} Tokens`;
-
-    const est = estimateTokens(text);
-    const percent = Math.min((est / CONTEXT_LIMIT) * 100, 100);
-
-    contextProgress.style.width = percent + "%";
-    contextUsageText.textContent = `${est} / ${CONTEXT_LIMIT}`;
-}
-
-/* =========================
-   MAIN ENGINE
-========================= */
-
-function updateAll() {
-    const text = promptInput.value;
-
-    const tokens = smartTokenize(text);
-
-    updateStats(text, tokens);
-    renderTokensAnimated(tokens);
-    updateJSON(tokens, text);
-}
-
-/* =========================
-   LIVE LISTENER
-========================= */
-
-let debounceTimer;
-
-promptInput.addEventListener("input", () => {
-    clearTimeout(debounceTimer);
-    debounceTimer = setTimeout(updateAll, 80);
+    /* INIT */
+    update();
 });
-
-/* INIT */
-updateAll();
