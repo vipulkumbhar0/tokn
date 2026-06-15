@@ -1,0 +1,312 @@
+/* =========================
+   Base Reset
+========================= */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Inter", Arial, sans-serif;
+}
+
+body {
+  background: #0b0f19;
+  color: #e5e7eb;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* =========================
+   Background Glow
+========================= */
+
+.bg-gradient {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at 20% 20%, #1f3b82 0%, transparent 40%),
+              radial-gradient(circle at 80% 30%, #4f46e5 0%, transparent 40%),
+              radial-gradient(circle at 50% 80%, #06b6d4 0%, transparent 40%);
+  filter: blur(80px);
+  opacity: 0.4;
+  z-index: -1;
+}
+
+/* =========================
+   Glass UI Base
+========================= */
+
+.glass {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(14px);
+  border-radius: 14px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+}
+
+/* =========================
+   Header
+========================= */
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 40px;
+}
+
+.logo-section {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logo-box {
+  width: 42px;
+  height: 42px;
+  background: #6366f1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 10px;
+  font-weight: bold;
+  color: white;
+}
+
+.logo-title {
+  font-size: 20px;
+}
+
+.logo-subtitle {
+  font-size: 12px;
+  color: #9ca3af;
+}
+
+/* =========================
+   Buttons
+========================= */
+
+.icon-btn {
+  background: transparent;
+  border: 1px solid #2b2f3a;
+  padding: 8px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  color: white;
+}
+
+.primary-btn {
+  background: #6366f1;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  color: white;
+  cursor: pointer;
+}
+
+.secondary-btn {
+  background: transparent;
+  border: 1px solid #6366f1;
+  padding: 8px 14px;
+  border-radius: 8px;
+  color: #6366f1;
+  cursor: pointer;
+}
+
+/* =========================
+   Layout Container
+========================= */
+
+.container {
+  padding: 30px 40px;
+  max-width: 1200px;
+  margin: auto;
+}
+
+/* =========================
+   Hero Section
+========================= */
+
+.hero-card {
+  padding: 25px;
+  margin-bottom: 20px;
+}
+
+.hero-content h2 {
+  font-size: 24px;
+  margin-bottom: 8px;
+}
+
+.hero-content p {
+  color: #9ca3af;
+}
+
+/* =========================
+   Editor Grid
+========================= */
+
+.editor-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 20px;
+}
+
+/* =========================
+   Prompt Card
+========================= */
+
+.prompt-card {
+  padding: 20px;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.live-badge {
+  background: #10b981;
+  color: black;
+  font-size: 12px;
+  padding: 3px 8px;
+  border-radius: 20px;
+}
+
+/* =========================
+   Textarea
+========================= */
+
+textarea {
+  width: 100%;
+  height: 180px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 10px;
+  padding: 12px;
+  color: white;
+  outline: none;
+  resize: none;
+}
+
+/* =========================
+   Stats Panel
+========================= */
+
+.stats-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.stat-card {
+  padding: 15px;
+  text-align: center;
+}
+
+.stat-label {
+  display: block;
+  font-size: 12px;
+  color: #9ca3af;
+}
+
+.stat-value {
+  font-size: 20px;
+  font-weight: bold;
+  margin-top: 5px;
+}
+
+/* =========================
+   Context Window
+========================= */
+
+.context-card {
+  margin-top: 20px;
+  padding: 20px;
+}
+
+.context-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.progress-wrapper {
+  width: 100%;
+  height: 10px;
+  background: #1f2937;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.progress-bar {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #6366f1, #06b6d4);
+}
+
+/* =========================
+   Token Section
+========================= */
+
+.token-section {
+  margin-top: 20px;
+  padding: 20px;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 15px;
+}
+
+.token-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* =========================
+   Empty State
+========================= */
+
+.empty-state {
+  text-align: center;
+  width: 100%;
+  padding: 40px;
+  color: #6b7280;
+}
+
+.empty-icon {
+  font-size: 30px;
+  margin-bottom: 10px;
+}
+
+/* =========================
+   JSON Section
+========================= */
+
+.json-section {
+  margin-top: 20px;
+  padding: 20px;
+}
+
+pre {
+  background: rgba(0,0,0,0.3);
+  padding: 15px;
+  border-radius: 10px;
+  overflow-x: auto;
+  color: #34d399;
+}
+
+/* =========================
+   Footer
+========================= */
+
+footer {
+  text-align: center;
+  padding: 20px;
+  color: #6b7280;
+  font-size: 12px;
+  margin-top: 30px;
+}
